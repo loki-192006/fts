@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center mb-4">Welcome to Foreign Trading System</h1>
+        <p class="text-center">Simulate forex trading with virtual money. Explore the market, place orders, and track your performance.</p>
+        <div class="row text-center mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Market Data</h5>
+                        <p class="card-text">View current simulated prices for various currency pairs.</p>
+                        <a href="{{ url_for('market') }}" class="btn btn-primary">View Market</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Place Order</h5>
+                        <p class="card-text">Buy or sell currencies to build your portfolio.</p>
+                        <a href="{{ url_for('place_order') }}" class="btn btn-primary">Place Order</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Portfolio</h5>
+                        <p class="card-text">Check your holdings and cash balance.</p>
+                        <a href="{{ url_for('portfolio') }}" class="btn btn-primary">View Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Place Order{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center mb-4">Place Order</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.currency_pair.label(class="form-label") }}
+                {{ form.currency_pair(class="form-select") }}
+            </div>
+            <div class="mb-3">
+                {{ form.action.label(class="form-label") }}
+                {{ form.action(class="form-select") }}
+            </div>
+            <div class="mb-3">
+                {{ form.amount.label(class="form-label") }}
+                {{ form.amount(class="form-control", placeholder="Enter amount") }}
+                {% if form.amount.errors %}
+                    {% for error in form.amount.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {{ form.submit(class="btn btn-primary w-100") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

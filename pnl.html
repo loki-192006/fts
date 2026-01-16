@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Profit & Loss{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Profit & Loss</h2>
+        <div class="mb-4">
+            <h4>Total P&L: ${{ "%.2f"|format(total_pnl) }}</h4>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Currency Pair</th>
+                    <th>Holding</th>
+                    <th>Avg Buy Price</th>
+                    <th>Current Price</th>
+                    <th>P&L</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pair, data in pnl_data.items() %}
+                    <tr>
+                        <td>{{ pair }}</td>
+                        <td>{{ "%.2f"|format(data.holding) }}</td>
+                        <td>${{ "%.4f"|format(data.avg_buy_price) }}</td>
+                        <td>${{ "%.4f"|format(data.current_price) }}</td>
+                        <td class="{{ 'text-success' if data.pnl >= 0 else 'text-danger' }}">${{ "%.2f"|format(data.pnl) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

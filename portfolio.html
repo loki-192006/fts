@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Your Portfolio</h2>
+        <div class="mb-4">
+            <h4>Cash Balance: ${{ "%.2f"|format(cash_balance) }}</h4>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Currency Pair</th>
+                    <th>Holding</th>
+                    <th>Current Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pair, holding in holdings.items() %}
+                    {% if holding > 0 %}
+                        <tr>
+                            <td>{{ pair }}</td>
+                            <td>{{ "%.2f"|format(holding) }}</td>
+                            <td>${{ "%.2f"|format(holding * market_data[pair]) }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
