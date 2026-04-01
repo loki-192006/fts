@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/sidebar', { activePage: 'Portfolio' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Portfolio</span>
+      </div>
+      <div class="topbar-right">
+        <a href="/trade" class="btn btn-primary btn-sm"><i class="fas fa-exchange-alt"></i> Trade Now</a>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>My Portfolio</h1>
+        <p>Track your currency holdings and performance</p>
+      </div>
+
+      <% if (portfolio.length === 0) { %>
+        <div class="card">
+          <div class="empty-state" style="padding:80px 20px">
+            <i class="fas fa-wallet"></i>
+            <p style="font-size:1rem;font-weight:600;margin-bottom:8px">No Holdings Yet</p>
+            <p>Start trading to build your portfolio</p>
+            <a href="/trade" class="btn btn-primary mt-4" style="margin-top:20px"><i class="fas fa-exchange-alt"></i> Start Trading</a>
+          </div>
+        </div>
+      <% } else { %>
+
+      <!-- Summary Stats -->
+      <%
+        let totalCurrentValue = 0;
+        let totalCostBasis = 0;
+        portfolio.forEach(p => { totalCurrentValue += p.currentValue || 0; totalCostBasis += p.costBasis || 0; });
+        let totalPnl = totalCurrentValue - totalCostBasis;
+      %>
+      <div class="stats-grid" style="margin-bottom:24px">
+        <div class="stat-card">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-coins"></i></div>
+          <div class="stat-label">Total Holdings</div>
+          <div class="stat-value"><%= portfolio.length %></div>
+          <div class="stat-sub">Currency positions</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+          <div class="stat-label">Portfolio Value</div>
+          <div class="stat-value">$<%= totalCurrentValue.toFixed(0) %></div>
+          <div class="stat-sub">At current rates</div>
+        </div>
+        <div class="stat-card <%= totalPnl >= 0 ? '' : 'red' %>">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-<%= totalPnl >= 0 ? 'trending-up' : 'trending-down' %>"></i></div>
+          <div class="stat-label">Total P&L</div>
+          <div class="stat-value" style="color:<%= totalPnl >= 0 ? 'var(--green)' : 'var(--red)' %>">
+            <%= totalPnl >= 0 ? '+' : '' %>$<%= Math.abs(totalPnl).toFixed(2) %>
+          </div>
+          <div class="stat-sub">Unrealized gain/loss</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-label">Cost Basis</div>
+          <div class="stat-value">$<%= totalCostBasis.toFixed(0) %></div>
+          <div class="stat-sub">Total invested</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px">
+        <!-- Holdings Cards -->
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:16px">Currency Holdings</div>
+          <div class="portfolio-grid">
+            <% portfolio.forEach(p => { %>
+            <div class="portfolio-card">
+              <div class="portfolio-currency">
+                <div style="font-size:2rem"><%= p.currencyCode === 'EUR' ? '🇪🇺' : p.currencyCode === 'GBP' ? '🇬🇧' : p.currencyCode === 'JPY' ? '🇯🇵' : p.currencyCode === 'INR' ? '🇮🇳' : p.currencyCode === 'AED' ? '🇦🇪' : p.currencyCode === 'CAD' ? '🇨🇦' : p.currencyCode === 'AUD' ? '🇦🇺' : p.currencyCode === 'CHF' ? '🇨🇭' : p.currencyCode === 'CNY' ? '🇨🇳' : p.currencyCode === 'SGD' ? '🇸🇬' : p.currencyCode === 'SAR' ? '🇸🇦' : '🌐' %></div>
+                <div>
+                  <div class="portfolio-code"><%= p.currencyCode %></div>
+                  <div class="portfolio-name">Currency Holdings</div>
+                </div>
+              </div>
+              <div class="portfolio-amount"><%= p.quantity.toFixed(2) %><span style="font-size:0.9rem;font-weight:500;color:var(--text-muted);margin-left:6px"><%= p.currencyCode %></span></div>
+              <div class="portfolio-rate-row">
+                <div class="portfolio-rate-item">
+                  <label>Avg Buy Rate</label>
+                  <span><%= p.averageBuyRate.toFixed(4) %></span>
+                </div>
+                <div class="portfolio-rate-item">
+                  <label>Current Rate</label>
+                  <span><%= (p.currentRate || p.averageBuyRate).toFixed(4) %></span>
+                </div>
+                <div class="portfolio-rate-item">
+                  <label>P&L</label>
+                  <span class="<%= (p.pnl || 0) >= 0 ? 'pnl-positive' : 'pnl-negative' %>">
+                    <%= (p.pnl || 0) >= 0 ? '+' : '' %>$<%= Math.abs(p.pnl || 0).toFixed(2) %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="card" style="align-self:start">
+          <div class="card-header"><div class="card-title">Portfolio Distribution</div></div>
+          <div class="card-body">
+            <div class="chart-container" style="height:200px"><canvas id="portfolioChart"></canvas></div>
+            <div style="margin-top:16px">
+              <% portfolio.forEach(p => { %>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-subtle)">
+                <span style="font-size:0.82rem;font-weight:600"><%= p.currencyCode %></span>
+                <span style="font-family:var(--mono);font-size:0.8rem;color:var(--text-muted)"><%= (((p.currentValue||0)/totalCurrentValue)*100).toFixed(1) %>%</span>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Holdings Table -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Detailed Holdings</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Currency</th><th>Quantity</th><th>Avg Buy Rate</th><th>Current Rate</th><th>Cost Basis</th><th>Current Value</th><th>P&L</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <% portfolio.forEach(p => { %>
+              <tr>
+                <td><strong><%= p.currencyCode %></strong></td>
+                <td class="text-mono"><%= p.quantity.toFixed(4) %></td>
+                <td class="text-mono"><%= p.averageBuyRate.toFixed(4) %></td>
+                <td class="text-mono"><%= (p.currentRate || p.averageBuyRate).toFixed(4) %></td>
+                <td class="text-mono">$<%= (p.costBasis || 0).toFixed(2) %></td>
+                <td class="text-mono fw-700">$<%= (p.currentValue || 0).toFixed(2) %></td>
+                <td class="text-mono fw-700 <%= (p.pnl || 0) >= 0 ? 'text-green' : 'text-red' %>">
+                  <%= (p.pnl || 0) >= 0 ? '+' : '' %>$<%= Math.abs(p.pnl || 0).toFixed(2) %>
+                </td>
+                <td><a href="/trade" class="btn btn-outline btn-sm">Trade</a></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <% } %>
+    </div>
+  </div>
+</div>
+<script>
+window.PORTFOLIO_LABELS = [<% portfolio.forEach((p,i) => { %>'<%= p.currencyCode %>'<%= i<portfolio.length-1?',':'' %><% }) %>];
+window.PORTFOLIO_DATA = [<% portfolio.forEach((p,i) => { %><%= (p.currentValue||0).toFixed(2) %><%= i<portfolio.length-1?',':'' %><% }) %>];
+</script>
+<script src="/js/main.js"></script>
+</body>
+</html>

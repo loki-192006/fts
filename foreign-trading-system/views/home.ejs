@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head') %></head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <i class="fas fa-chart-line logo-icon"></i>
+    <span>ForexPro</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#rates">Live Rates</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/auth/login" class="btn btn-ghost">Login</a>
+    <a href="/auth/register" class="btn btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge"><i class="fas fa-circle"></i> Live Trading Platform</div>
+      <h1 class="hero-title">
+        Trade Currencies<br>with <span class="highlight">Precision</span><br>& Confidence
+      </h1>
+      <p class="hero-subtitle">
+        A professional foreign exchange trading platform with real-time rates, portfolio tracking, and seamless trade execution. Built for modern traders.
+      </p>
+      <div class="hero-actions">
+        <a href="/auth/register" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Start Trading</a>
+        <a href="/auth/login" class="btn btn-outline btn-lg"><i class="fas fa-chart-bar"></i> Explore Dashboard</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">12+</div>
+          <div class="hero-stat-label">Currencies Supported</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">Real-Time</div>
+          <div class="hero-stat-label">Exchange Rates</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">Secure</div>
+          <div class="hero-stat-label">Session-Based Auth</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="dashboard-preview">
+        <div class="preview-header">
+          <span class="preview-title">Portfolio Overview</span>
+          <span class="preview-badge">● Live</span>
+        </div>
+        <div class="preview-balance">$10,420.50</div>
+        <div class="preview-balance-label">Total Wallet Balance</div>
+        <div class="preview-rate-cards">
+          <div class="preview-rate-card">
+            <div class="prc-code">EUR</div>
+            <div class="prc-rate">0.9210</div>
+            <div class="prc-change down">▼ 0.15%</div>
+          </div>
+          <div class="preview-rate-card">
+            <div class="prc-code">GBP</div>
+            <div class="prc-rate">0.7905</div>
+            <div class="prc-change up">▲ 0.22%</div>
+          </div>
+          <div class="preview-rate-card">
+            <div class="prc-code">JPY</div>
+            <div class="prc-rate">149.50</div>
+            <div class="prc-change down">▼ 0.43%</div>
+          </div>
+          <div class="preview-rate-card">
+            <div class="prc-code">INR</div>
+            <div class="prc-rate">83.12</div>
+            <div class="prc-change up">▲ 0.08%</div>
+          </div>
+          <div class="preview-rate-card">
+            <div class="prc-code">AED</div>
+            <div class="prc-rate">3.670</div>
+            <div class="prc-change up">▲ 0.01%</div>
+          </div>
+          <div class="preview-rate-card">
+            <div class="prc-code">CAD</div>
+            <div class="prc-rate">1.360</div>
+            <div class="prc-change down">▼ 0.12%</div>
+          </div>
+        </div>
+        <div class="preview-chart-bar"><div class="preview-chart-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <div class="ticker-item"><span class="ticker-code">EUR/USD</span><span class="ticker-rate">0.9210</span><span class="ticker-change down">▼ 0.15%</span></div>
+    <div class="ticker-item"><span class="ticker-code">GBP/USD</span><span class="ticker-rate">0.7905</span><span class="ticker-change up">▲ 0.22%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/JPY</span><span class="ticker-rate">149.50</span><span class="ticker-change down">▼ 0.43%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/INR</span><span class="ticker-rate">83.12</span><span class="ticker-change up">▲ 0.08%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/AED</span><span class="ticker-rate">3.670</span><span class="ticker-change up">▲ 0.01%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/CAD</span><span class="ticker-rate">1.360</span><span class="ticker-change down">▼ 0.12%</span></div>
+    <div class="ticker-item"><span class="ticker-code">AUD/USD</span><span class="ticker-rate">0.6535</span><span class="ticker-change up">▲ 0.35%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/CHF</span><span class="ticker-rate">0.8820</span><span class="ticker-change down">▼ 0.05%</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item"><span class="ticker-code">EUR/USD</span><span class="ticker-rate">0.9210</span><span class="ticker-change down">▼ 0.15%</span></div>
+    <div class="ticker-item"><span class="ticker-code">GBP/USD</span><span class="ticker-rate">0.7905</span><span class="ticker-change up">▲ 0.22%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/JPY</span><span class="ticker-rate">149.50</span><span class="ticker-change down">▼ 0.43%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/INR</span><span class="ticker-rate">83.12</span><span class="ticker-change up">▲ 0.08%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/AED</span><span class="ticker-rate">3.670</span><span class="ticker-change up">▲ 0.01%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/CAD</span><span class="ticker-rate">1.360</span><span class="ticker-change down">▼ 0.12%</span></div>
+    <div class="ticker-item"><span class="ticker-code">AUD/USD</span><span class="ticker-rate">0.6535</span><span class="ticker-change up">▲ 0.35%</span></div>
+    <div class="ticker-item"><span class="ticker-code">USD/CHF</span><span class="ticker-rate">0.8820</span><span class="ticker-change down">▼ 0.05%</span></div>
+  </div>
+</div>
+
+<!-- Features -->
+<section id="features" style="background:var(--bg-secondary)">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Why ForexPro</div>
+      <h2 class="section-title">Everything You Need to Trade</h2>
+      <p class="section-subtitle">Professional-grade tools wrapped in an intuitive interface designed for modern forex traders.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+        <div class="feature-title">Instant Execution</div>
+        <p class="feature-desc">Execute trades instantly with real-time rate calculations and automatic portfolio updates.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="feature-title">Market Analytics</div>
+        <p class="feature-desc">Track market trends with beautiful charts and comprehensive rate data for all major currencies.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+        <div class="feature-title">Portfolio Tracking</div>
+        <p class="feature-desc">Monitor your holdings, track P&L in real-time, and manage your diversified currency portfolio.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="feature-title">Secure Platform</div>
+        <p class="feature-desc">Bank-grade security with encrypted passwords, session management, and admin oversight.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-history"></i></div>
+        <div class="feature-title">Transaction History</div>
+        <p class="feature-desc">Complete audit trail of all trades with filtering, search, and detailed transaction records.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+        <div class="feature-title">Admin Control</div>
+        <p class="feature-desc">Powerful admin panel to manage users, monitor trades, and update exchange rates in real-time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Live Rates Preview -->
+<section id="rates">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Live Market</div>
+      <h2 class="section-title">Current Exchange Rates</h2>
+      <p class="section-subtitle">Live forex rates for all major currency pairs. Register to access full trading features.</p>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="rates-table">
+          <thead>
+            <tr><th>Currency</th><th>Code</th><th>Rate to USD</th><th>24h Change</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="currency-name-cell"><span class="currency-flag">🇪🇺</span><div><div class="currency-code">EUR</div><div class="currency-full">Euro</div></div></div></td><td><span class="text-mono fw-700">EUR</span></td><td><span class="rate-value">0.9210</span></td><td><span class="change-badge down"><i class="fas fa-caret-down"></i> 0.15%</span></td><td><a href="/auth/register" class="btn btn-primary btn-sm">Trade</a></td></tr>
+            <tr><td><div class="currency-name-cell"><span class="currency-flag">🇬🇧</span><div><div class="currency-code">GBP</div><div class="currency-full">British Pound</div></div></div></td><td><span class="text-mono fw-700">GBP</span></td><td><span class="rate-value">0.7905</span></td><td><span class="change-badge up"><i class="fas fa-caret-up"></i> 0.22%</span></td><td><a href="/auth/register" class="btn btn-primary btn-sm">Trade</a></td></tr>
+            <tr><td><div class="currency-name-cell"><span class="currency-flag">🇯🇵</span><div><div class="currency-code">JPY</div><div class="currency-full">Japanese Yen</div></div></div></td><td><span class="text-mono fw-700">JPY</span></td><td><span class="rate-value">149.50</span></td><td><span class="change-badge down"><i class="fas fa-caret-down"></i> 0.43%</span></td><td><a href="/auth/register" class="btn btn-primary btn-sm">Trade</a></td></tr>
+            <tr><td><div class="currency-name-cell"><span class="currency-flag">🇮🇳</span><div><div class="currency-code">INR</div><div class="currency-full">Indian Rupee</div></div></div></td><td><span class="text-mono fw-700">INR</span></td><td><span class="rate-value">83.12</span></td><td><span class="change-badge up"><i class="fas fa-caret-up"></i> 0.08%</span></td><td><a href="/auth/register" class="btn btn-primary btn-sm">Trade</a></td></tr>
+            <tr><td><div class="currency-name-cell"><span class="currency-flag">🇦🇪</span><div><div class="currency-code">AED</div><div class="currency-full">UAE Dirham</div></div></div></td><td><span class="text-mono fw-700">AED</span></td><td><span class="rate-value">3.670</span></td><td><span class="change-badge up"><i class="fas fa-caret-up"></i> 0.01%</span></td><td><a href="/auth/register" class="btn btn-primary btn-sm">Trade</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="about">
+  <div class="container" style="text-align:center">
+    <div class="section-label">Get Started Today</div>
+    <h2 class="cta-title">Ready to Start<br>Trading Forex?</h2>
+    <p class="cta-subtitle">Join our platform and experience professional forex trading with a clean, powerful interface.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="/auth/register" class="btn btn-primary btn-lg"><i class="fas fa-user-plus"></i> Create Free Account</a>
+      <a href="/auth/login" class="btn btn-outline btn-lg"><i class="fas fa-sign-in-alt"></i> Login to Trade</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-brand"><i class="fas fa-chart-line logo-icon"></i><span>ForexPro</span></div>
+        <p>A professional foreign currency trading platform built for modern traders. Secure, fast, and intuitive.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/auth/register">Register</a>
+        <a href="/auth/login">Login</a>
+        <a href="#features">Features</a>
+        <a href="#rates">Live Rates</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Documentation</a>
+        <a href="#">API Reference</a>
+        <a href="#">Trading Guide</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="#">support@forexpro.com</a>
+        <a href="#">GitHub Repository</a>
+        <a href="#">College Mini Project</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 ForexPro — Foreign Trading System. CSE Mini Project.</p>
+      <p style="color:var(--accent)">Built with Node.js + MongoDB</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

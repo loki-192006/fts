@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/sidebar', { activePage: 'Trade' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Trade</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-balance"><i class="fas fa-wallet"></i> $<%= user.walletBalance.toFixed(2) %></div>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>Execute Trade</h1>
+        <p>Buy or sell currencies at live market rates</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:24px">
+        <!-- Trade Form -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-exchange-alt text-accent"></i> New Trade Order</div>
+          </div>
+          <div class="card-body">
+            <!-- Trade Type -->
+            <div class="form-group">
+              <label class="form-label">Order Type</label>
+              <div class="trade-type-selector">
+                <button type="button" class="trade-type-btn active-buy" data-type="buy" onclick="setTradeType('buy')">
+                  <i class="fas fa-arrow-up"></i> BUY
+                </button>
+                <button type="button" class="trade-type-btn" data-type="sell" onclick="setTradeType('sell')">
+                  <i class="fas fa-arrow-down"></i> SELL
+                </button>
+              </div>
+            </div>
+
+            <form action="/trade/execute" method="POST" id="tradeForm">
+              <input type="hidden" name="type" id="trade-type-hidden" value="buy">
+
+              <div class="trade-form-grid">
+                <div class="form-group">
+                  <label class="form-label">Base Currency (From)</label>
+                  <select name="baseCurrency" class="form-control" id="base-currency" required>
+                    <% rates.forEach(r => { %>
+                      <option value="<%= r.currencyCode %>" data-rate="<%= r.rateToUSD %>"><%= r.currencyCode %> — <%= r.currencyName %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Target Currency (To)</label>
+                  <select name="targetCurrency" class="form-control" id="target-currency" required>
+                    <% rates.forEach(r => { %>
+                      <option value="<%= r.currencyCode %>" <%= r.currencyCode === 'EUR' ? 'selected' : '' %>><%= r.currencyCode %> — <%= r.currencyName %></option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Amount</label>
+                <input type="number" name="amount" class="form-control" id="trade-amount" placeholder="Enter amount" min="0.01" step="0.01" required>
+              </div>
+
+              <!-- Calculation Result -->
+              <div class="calc-result" id="calc-result">
+                <div class="calc-row">
+                  <span class="calc-label">Exchange Rate</span>
+                  <span class="calc-val" id="calc-rate">—</span>
+                </div>
+                <div class="calc-row">
+                  <span class="calc-label">You will receive</span>
+                  <span class="calc-val" id="calc-total">—</span>
+                </div>
+                <div class="calc-row">
+                  <span class="calc-label">Platform Fee (0.1%)</span>
+                  <span class="calc-val" id="calc-fee">—</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-full mt-4" style="justify-content:center;padding:15px;font-size:0.95rem">
+                <i class="fas fa-paper-plane"></i> Confirm & Execute Trade
+              </button>
+
+              <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-top:12px">
+                <i class="fas fa-shield-alt text-accent"></i> Trades are executed instantly at current market rates
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Rates Reference Panel -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Live Rates (vs USD)</div></div>
+            <div class="card-body" style="padding:0">
+              <% rates.forEach(rate => { %>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border-subtle)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-weight:700;font-size:0.9rem"><%= rate.currencyCode %></span>
+                  <span style="font-size:0.72rem;color:var(--text-muted)"><%= rate.currencyName %></span>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-family:var(--mono);font-size:0.88rem;font-weight:600"><%= rate.rateToUSD.toFixed(4) %></div>
+                  <div style="font-size:0.7rem;font-weight:600;color:<%= rate.change24h >= 0 ? 'var(--green)' : 'var(--red)' %>">
+                    <%= rate.change24h >= 0 ? '+' : '' %><%= rate.change24h %>%
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Your Balance</div></div>
+            <div class="card-body" style="text-align:center">
+              <div style="font-size:2rem;font-weight:800;color:var(--accent);letter-spacing:-1px">$<%= user.walletBalance.toFixed(2) %></div>
+              <div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px">Available USD for trading</div>
+              <a href="/dashboard/portfolio" class="btn btn-outline btn-sm mt-4" style="margin-top:16px"><i class="fas fa-wallet"></i> View Portfolio</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+window.RATES_DATA = {
+  <% rates.forEach((r, i) => { %>
+  '<%= r.currencyCode %>': <%= r.rateToUSD %><%= i < rates.length - 1 ? ',' : '' %>
+  <% }) %>
+};
+
+function setTradeType(type) {
+  document.getElementById('trade-type-hidden').value = type;
+  document.querySelectorAll('.trade-type-btn').forEach(b => b.classList.remove('active-buy', 'active-sell'));
+  document.querySelector('[data-type="' + type + '"]').classList.add(type === 'buy' ? 'active-buy' : 'active-sell');
+}
+</script>
+<script src="/js/main.js"></script>
+</body>
+</html>

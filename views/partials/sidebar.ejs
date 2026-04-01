@@ -1,0 +1,39 @@
+<%
+const links = [
+  { href: '/dashboard', icon: 'fa-chart-pie', label: 'Dashboard' },
+  { href: '/trade', icon: 'fa-exchange-alt', label: 'Trade' },
+  { href: '/dashboard/portfolio', icon: 'fa-wallet', label: 'Portfolio' },
+  { href: '/rates', icon: 'fa-chart-line', label: 'Market Rates' },
+  { href: '/dashboard/transactions', icon: 'fa-list-alt', label: 'Transactions' }
+];
+%>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-chart-line logo-icon"></i>
+    <div>
+      <div class="brand-name">ForexPro</div>
+      <div class="brand-tag">Live Trading</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Main Menu</div>
+    <% links.forEach(link => { %>
+      <a href="<%= link.href %>" class="sidebar-link <%= locals.activePage === link.label ? 'active' : '' %>">
+        <i class="fas <%= link.icon %>"></i>
+        <span><%= link.label %></span>
+      </a>
+    <% }) %>
+    <div class="sidebar-section-label" style="margin-top:16px">Account</div>
+    <a href="/auth/logout" class="sidebar-link" style="color:#ef4444">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar"><%= currentUser ? currentUser.name.charAt(0).toUpperCase() : 'U' %></div>
+    <div>
+      <div class="user-info-name"><%= currentUser ? currentUser.name : 'User' %></div>
+      <div class="user-info-role">Trader</div>
+    </div>
+  </div>
+</aside>

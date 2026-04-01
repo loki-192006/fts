@@ -1,0 +1,9 @@
+<% if (success && success.length > 0) { %>
+  <div class="flash flash-success"><i class="fas fa-check-circle"></i> <%= success[0] %></div>
+<% } %>
+<% if (error && error.length > 0) { %>
+  <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> <%= error[0] %></div>
+<% } %>
+<% if (info && info.length > 0) { %>
+  <div class="flash flash-info"><i class="fas fa-info-circle"></i> <%= info[0] %></div>
+<% } %>

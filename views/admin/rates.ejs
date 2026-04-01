@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/adminSidebar', { activePage: 'Manage Rates' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Manage Exchange Rates</span>
+      </div>
+      <div class="topbar-right">
+        <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>Exchange Rate Management</h1>
+        <p>Update live exchange rates for all currencies</p>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Currency</th><th>Name</th><th>Current Rate (vs USD)</th><th>24h Change %</th><th>Last Updated</th><th>Update</th></tr>
+            </thead>
+            <tbody>
+              <% rates.forEach(rate => { %>
+              <tr>
+                <td><span class="text-mono fw-700 text-accent"><%= rate.currencyCode %></span></td>
+                <td style="font-weight:600;font-size:0.87rem"><%= rate.currencyName %></td>
+                <td class="text-mono fw-700"><%= rate.rateToUSD.toFixed(4) %></td>
+                <td class="text-mono" style="color:<%= rate.change24h >= 0 ? 'var(--green)' : 'var(--red)' %>">
+                  <%= rate.change24h >= 0 ? '+' : '' %><%= rate.change24h %>%
+                </td>
+                <td style="font-size:0.75rem;color:var(--text-muted)"><%= new Date(rate.updatedAt).toLocaleString() %></td>
+                <td>
+                  <button onclick="openEditModal('<%= rate._id %>','<%= rate.currencyCode %>','<%= rate.rateToUSD %>','<%= rate.change24h %>')"
+                    class="btn btn-outline btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;display:none">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;width:100%;max-width:420px;box-shadow:var(--shadow)">
+    <h3 style="margin-bottom:20px;font-size:1.1rem"><i class="fas fa-edit text-accent"></i> Update Rate — <span id="modal-code"></span></h3>
+    <form id="editForm" method="POST">
+      <div class="form-group">
+        <label class="form-label">Rate to USD</label>
+        <input type="number" name="rateToUSD" id="modal-rate" class="form-control" step="0.0001" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">24h Change (%)</label>
+        <input type="number" name="change24h" id="modal-change" class="form-control" step="0.01">
+      </div>
+      <div style="display:flex;gap:12px;margin-top:24px">
+        <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center"><i class="fas fa-save"></i> Save Rate</button>
+        <button type="button" onclick="closeModal()" class="btn btn-outline" style="flex:1;justify-content:center">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEditModal(id, code, rate, change) {
+  document.getElementById('modal-code').textContent = code;
+  document.getElementById('modal-rate').value = rate;
+  document.getElementById('modal-change').value = change;
+  document.getElementById('editForm').action = '/admin/rates/' + id + '/update';
+  document.getElementById('editModal').style.display = 'flex';
+}
+function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+document.getElementById('editModal').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+</script>
+<script src="/js/main.js"></script>
+</body>
+</html>

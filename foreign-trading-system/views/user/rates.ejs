@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/sidebar', { activePage: 'Market Rates' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Market Rates</span>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text-muted)">
+          <span style="width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
+          Live Rates
+        </div>
+        <a href="/trade" class="btn btn-primary btn-sm"><i class="fas fa-exchange-alt"></i> Trade</a>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>Market Exchange Rates</h1>
+        <p>Live rates for all major currency pairs against USD</p>
+      </div>
+
+      <!-- Rate Cards Grid -->
+      <div class="rate-cards-grid" style="margin-bottom:28px">
+        <% rates.forEach(rate => { %>
+        <div class="rate-card">
+          <div class="rate-card-header">
+            <span style="font-size:1.6rem"><%= rate.currencyCode === 'EUR' ? '🇪🇺' : rate.currencyCode === 'GBP' ? '🇬🇧' : rate.currencyCode === 'JPY' ? '🇯🇵' : rate.currencyCode === 'INR' ? '🇮🇳' : rate.currencyCode === 'AED' ? '🇦🇪' : rate.currencyCode === 'CAD' ? '🇨🇦' : rate.currencyCode === 'AUD' ? '🇦🇺' : rate.currencyCode === 'CHF' ? '🇨🇭' : rate.currencyCode === 'CNY' ? '🇨🇳' : rate.currencyCode === 'SGD' ? '🇸🇬' : rate.currencyCode === 'SAR' ? '🇸🇦' : rate.currencyCode === 'USD' ? '🇺🇸' : '🌐' %></span>
+            <span class="rate-change <%= rate.change24h >= 0 ? 'up' : 'down' %>">
+              <i class="fas fa-caret-<%= rate.change24h >= 0 ? 'up' : 'down' %>"></i>
+              <%= Math.abs(rate.change24h) %>%
+            </span>
+          </div>
+          <div class="rate-code"><%= rate.currencyCode %> / USD</div>
+          <div class="rate-value-display"><%= rate.rateToUSD.toFixed(4) %></div>
+          <div class="rate-name-small"><%= rate.currencyName %></div>
+          <div style="margin-top:12px">
+            <a href="/trade" class="btn btn-primary btn-sm w-full" style="justify-content:center">Trade</a>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <!-- Full Rates Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-table text-accent"></i> Full Rates Table</div>
+          <span class="card-badge">Updated: <%= new Date().toLocaleTimeString() %></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Flag</th>
+                <th>Currency Name</th>
+                <th>Code</th>
+                <th>Symbol</th>
+                <th>Rate (vs USD)</th>
+                <th>USD per 1 Unit</th>
+                <th>24h Change</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% rates.forEach(rate => { %>
+              <tr>
+                <td style="font-size:1.4rem"><%= rate.currencyCode === 'EUR' ? '🇪🇺' : rate.currencyCode === 'GBP' ? '🇬🇧' : rate.currencyCode === 'JPY' ? '🇯🇵' : rate.currencyCode === 'INR' ? '🇮🇳' : rate.currencyCode === 'AED' ? '🇦🇪' : rate.currencyCode === 'CAD' ? '🇨🇦' : rate.currencyCode === 'AUD' ? '🇦🇺' : rate.currencyCode === 'CHF' ? '🇨🇭' : rate.currencyCode === 'CNY' ? '🇨🇳' : rate.currencyCode === 'SGD' ? '🇸🇬' : rate.currencyCode === 'SAR' ? '🇸🇦' : rate.currencyCode === 'USD' ? '🇺🇸' : '🌐' %></td>
+                <td style="font-weight:600"><%= rate.currencyName %></td>
+                <td><span class="text-mono fw-700 text-accent"><%= rate.currencyCode %></span></td>
+                <td class="text-mono"><%= rate.symbol || '—' %></td>
+                <td class="text-mono fw-700"><%= rate.rateToUSD.toFixed(4) %></td>
+                <td class="text-mono" style="color:var(--text-secondary)"><%= (1/rate.rateToUSD).toFixed(6) %></td>
+                <td>
+                  <span class="change-badge <%= rate.change24h >= 0 ? 'up' : 'down' %>">
+                    <i class="fas fa-caret-<%= rate.change24h >= 0 ? 'up' : 'down' %>"></i>
+                    <%= rate.change24h >= 0 ? '+' : '' %><%= rate.change24h %>%
+                  </span>
+                </td>
+                <td><a href="/trade" class="btn btn-primary btn-sm">Trade</a></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Currency Converter Calculator -->
+      <div class="card" style="margin-top:24px">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-calculator text-accent"></i> Currency Converter Calculator</div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Amount</label>
+              <input type="number" id="conv-amount" class="form-control" placeholder="100" value="100" oninput="convertCurrency()">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:2px">
+              <label class="form-label" style="text-align:center">From / To</label>
+              <select id="conv-from" class="form-control" onchange="convertCurrency()" style="width:120px">
+                <% rates.forEach(r => { %><option value="<%= r.rateToUSD %>" data-code="<%= r.currencyCode %>"><%= r.currencyCode %></option><% }) %>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <div style="display:flex;gap:12px;align-items:end">
+                <div style="flex:1">
+                  <label class="form-label">To Currency</label>
+                  <select id="conv-to" class="form-control" onchange="convertCurrency()">
+                    <% rates.forEach(r => { %><option value="<%= r.rateToUSD %>" data-code="<%= r.currencyCode %>" <%= r.currencyCode==='USD'?'selected':'' %>><%= r.currencyCode %></option><% }) %>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="conv-result" style="margin-top:20px;padding:20px;background:rgba(20,184,166,0.06);border:1px solid var(--border);border-radius:var(--radius-sm);display:none">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);text-align:center" id="conv-output">—</div>
+            <div style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:6px" id="conv-rate-label">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+function convertCurrency() {
+  const amount = parseFloat(document.getElementById('conv-amount').value) || 0;
+  const fromRate = parseFloat(document.getElementById('conv-from').value) || 1;
+  const toRate = parseFloat(document.getElementById('conv-to').value) || 1;
+  const fromCode = document.getElementById('conv-from').options[document.getElementById('conv-from').selectedIndex].dataset.code;
+  const toCode = document.getElementById('conv-to').options[document.getElementById('conv-to').selectedIndex].dataset.code;
+  const result = (amount / fromRate) * toRate;
+  const rate = toRate / fromRate;
+  document.getElementById('conv-output').textContent = result.toFixed(4) + ' ' + toCode;
+  document.getElementById('conv-rate-label').textContent = '1 ' + fromCode + ' = ' + rate.toFixed(6) + ' ' + toCode;
+  document.getElementById('conv-result').style.display = 'block';
+}
+convertCurrency();
+</script>
+<script src="/js/main.js"></script>
+</body>
+</html>

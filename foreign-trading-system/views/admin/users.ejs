@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %></head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/adminSidebar', { activePage: 'All Users' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">User Management</span>
+      </div>
+      <div class="topbar-right">
+        <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>All Users</h1>
+        <p>Manage registered traders on the platform (<%= users.length %> total)</p>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <% if (users.length === 0) { %>
+            <div class="empty-state"><i class="fas fa-users"></i><p>No users registered yet</p></div>
+          <% } else { %>
+          <table>
+            <thead>
+              <tr><th>#</th><th>Name</th><th>Email</th><th>Wallet Balance</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <% users.forEach((u, i) => { %>
+              <tr>
+                <td style="color:var(--text-muted);font-size:0.78rem"><%= i+1 %></td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div class="user-avatar" style="width:32px;height:32px;font-size:0.75rem;flex-shrink:0"><%= u.name.charAt(0).toUpperCase() %></div>
+                    <span style="font-weight:600;font-size:0.88rem"><%= u.name %></span>
+                  </div>
+                </td>
+                <td style="color:var(--text-secondary);font-size:0.85rem"><%= u.email %></td>
+                <td class="text-mono fw-700 text-accent">$<%= u.walletBalance.toFixed(2) %></td>
+                <td>
+                  <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;
+                    background:<%= u.isActive ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)' %>;
+                    color:<%= u.isActive ? 'var(--green)' : 'var(--red)' %>">
+                    ● <%= u.isActive ? 'Active' : 'Suspended' %>
+                  </span>
+                </td>
+                <td style="color:var(--text-muted);font-size:0.78rem"><%= new Date(u.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <form action="/admin/users/<%= u._id %>/toggle" method="POST" style="display:inline">
+                    <button type="submit" class="btn <%= u.isActive ? 'btn-danger' : 'btn-success' %> btn-sm">
+                      <i class="fas fa-<%= u.isActive ? 'ban' : 'check' %>"></i>
+                      <%= u.isActive ? 'Suspend' : 'Activate' %>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

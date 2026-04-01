@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <%- include('../partials/sidebar', { activePage: 'Dashboard' }) %>
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="notification-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-balance"><i class="fas fa-wallet"></i> $<%= user.walletBalance.toFixed(2) %></div>
+        <a href="/trade" class="btn btn-primary btn-sm"><i class="fas fa-exchange-alt"></i> Trade Now</a>
+        <button class="notification-btn"><i class="fas fa-bell"></i></button>
+      </div>
+    </div>
+    <div class="page-content">
+      <%- include('../partials/flash') %>
+      <div class="page-header">
+        <h1>Good <%= new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening' %>, <%= user.name.split(' ')[0] %> 👋</h1>
+        <p>Here's your trading overview for today</p>
+        <div class="page-date"><%= new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) %></div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+          <div class="stat-label">Wallet Balance</div>
+          <div class="stat-value">$<span data-counter="<%= user.walletBalance.toFixed(0) %>"><%= user.walletBalance.toFixed(2) %></span></div>
+          <div class="stat-sub">Available USD Balance</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+          <div class="stat-label">Total Bought</div>
+          <div class="stat-value">$<%= totalBought.toFixed(0) %></div>
+          <div class="stat-sub">Cumulative Purchases</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+          <div class="stat-label">Total Sold</div>
+          <div class="stat-value">$<%= totalSold.toFixed(0) %></div>
+          <div class="stat-sub">Cumulative Sales</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-glow"></div>
+          <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
+          <div class="stat-label">Total Trades</div>
+          <div class="stat-value"><%= totalTrades %></div>
+          <div class="stat-trend <%= pnl >= 0 ? 'up' : 'down' %>">
+            <i class="fas fa-<%= pnl >= 0 ? 'arrow-up' : 'arrow-down' %>"></i>
+            P&L: $<%= Math.abs(pnl).toFixed(2) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart + Quick Trade -->
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Market Trend Overview</div>
+              <div class="card-subtitle">EUR/USD & GBP/USD — 12 months</div>
+            </div>
+            <span class="card-badge">Live Data</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="marketChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Quick Trade</div>
+          </div>
+          <div class="card-body">
+            <a href="/trade" style="display:block;margin-bottom:12px">
+              <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:12px;transition:var(--transition)" onmouseover="this.style.background='rgba(34,197,94,0.18)'" onmouseout="this.style.background='rgba(34,197,94,0.1)'">
+                <div style="width:40px;height:40px;background:rgba(34,197,94,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1.1rem"><i class="fas fa-arrow-up"></i></div>
+                <div><div style="font-weight:700;color:var(--green)">Buy Currency</div><div style="font-size:0.75rem;color:var(--text-muted)">Purchase foreign currency</div></div>
+                <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </div>
+            </a>
+            <a href="/trade">
+              <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:12px;transition:var(--transition)" onmouseover="this.style.background='rgba(239,68,68,0.18)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                <div style="width:40px;height:40px;background:rgba(239,68,68,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:1.1rem"><i class="fas fa-arrow-down"></i></div>
+                <div><div style="font-weight:700;color:var(--red)">Sell Currency</div><div style="font-size:0.75rem;color:var(--text-muted)">Sell from your portfolio</div></div>
+                <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </div>
+            </a>
+            <div style="margin-top:20px">
+              <div style="font-size:0.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Holdings</div>
+              <% if (portfolio.length === 0) { %>
+                <p style="color:var(--text-muted);font-size:0.82rem;text-align:center;padding:20px 0">No holdings yet. Start trading!</p>
+              <% } else { portfolio.slice(0,3).forEach(p => { %>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-subtle)">
+                  <span style="font-weight:700;font-size:0.88rem"><%= p.currencyCode %></span>
+                  <span style="font-family:var(--mono);font-size:0.85rem;color:var(--text-secondary)"><%= p.quantity.toFixed(2) %></span>
+                </div>
+              <% }) } %>
+              <% if (portfolio.length > 3) { %>
+                <a href="/dashboard/portfolio" style="font-size:0.78rem;color:var(--accent);display:block;text-align:center;margin-top:10px">View all <%= portfolio.length %> holdings →</a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Rates -->
+      <div class="card mb-6">
+        <div class="card-header">
+          <div class="card-title">Live Exchange Rates</div>
+          <a href="/rates" style="font-size:0.8rem;color:var(--accent)">View All →</a>
+        </div>
+        <div class="card-body">
+          <div class="rate-cards-grid">
+            <% rates.forEach(rate => { %>
+            <div class="rate-card">
+              <div class="rate-card-header">
+                <span style="font-size:1.3rem"><%= rate.flag === 'eu' ? '🇪🇺' : rate.flag === 'gb' ? '🇬🇧' : rate.flag === 'jp' ? '🇯🇵' : rate.flag === 'in' ? '🇮🇳' : rate.flag === 'ae' ? '🇦🇪' : rate.flag === 'ca' ? '🇨🇦' : rate.flag === 'au' ? '🇦🇺' : rate.flag === 'ch' ? '🇨🇭' : rate.flag === 'cn' ? '🇨🇳' : rate.flag === 'sg' ? '🇸🇬' : rate.flag === 'sa' ? '🇸🇦' : '🌐' %></span>
+                <span class="rate-change <%= rate.change24h >= 0 ? 'up' : 'down' %>"><%= rate.change24h >= 0 ? '+' : '' %><%= rate.change24h %>%</span>
+              </div>
+              <div class="rate-code"><%= rate.currencyCode %></div>
+              <div class="rate-value-display"><%= rate.rateToUSD.toFixed(4) %></div>
+              <div class="rate-name-small"><%= rate.currencyName %></div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recent Transactions</div>
+          <a href="/dashboard/transactions" style="font-size:0.8rem;color:var(--accent)">View All →</a>
+        </div>
+        <div class="table-wrap">
+          <% if (transactions.length === 0) { %>
+            <div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet. Make your first trade!</p></div>
+          <% } else { %>
+          <table>
+            <thead><tr><th>Type</th><th>Pair</th><th>Amount</th><th>Rate</th><th>Total Value</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <% transactions.forEach(tx => { %>
+              <tr>
+                <td><span class="type-badge <%= tx.type %>"><i class="fas fa-<%= tx.type === 'buy' ? 'arrow-up' : 'arrow-down' %>"></i> <%= tx.type.toUpperCase() %></span></td>
+                <td class="text-mono" style="font-weight:600"><%= tx.baseCurrency %>/<%= tx.targetCurrency %></td>
+                <td class="text-mono"><%= tx.amount.toFixed(2) %></td>
+                <td class="text-mono" style="color:var(--text-muted)"><%= tx.exchangeRate.toFixed(4) %></td>
+                <td class="text-mono fw-700"><%= tx.totalValue.toFixed(2) %></td>
+                <td style="color:var(--text-muted);font-size:0.78rem"><%= new Date(tx.createdAt).toLocaleDateString() %></td>
+                <td><span class="status-badge <%= tx.status %>"><%= tx.status %></span></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

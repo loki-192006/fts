@@ -1,0 +1,37 @@
+<%
+const adminLinks = [
+  { href: '/admin/dashboard', icon: 'fa-tachometer-alt', label: 'Dashboard' },
+  { href: '/admin/users', icon: 'fa-users', label: 'All Users' },
+  { href: '/admin/transactions', icon: 'fa-exchange-alt', label: 'Transactions' },
+  { href: '/admin/rates', icon: 'fa-chart-line', label: 'Manage Rates' }
+];
+%>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-shield-alt logo-icon"></i>
+    <div>
+      <div class="brand-name">ForexPro</div>
+      <div class="brand-tag" style="background:rgba(245,158,11,0.15);color:#f59e0b">Admin Panel</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Administration</div>
+    <% adminLinks.forEach(link => { %>
+      <a href="<%= link.href %>" class="sidebar-link <%= locals.activePage === link.label ? 'active' : '' %>">
+        <i class="fas <%= link.icon %>"></i>
+        <span><%= link.label %></span>
+      </a>
+    <% }) %>
+    <div class="sidebar-section-label" style="margin-top:16px">Account</div>
+    <a href="/auth/logout" class="sidebar-link" style="color:#ef4444">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+    </a>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#0a1628">A</div>
+    <div>
+      <div class="user-info-name"><%= currentUser ? currentUser.name : 'Admin' %></div>
+      <div class="user-info-role"><span class="admin-badge">ADMIN</span></div>
+    </div>
+  </div>
+</aside>
