@@ -5,7 +5,7 @@ const CurrencyRate = require('./models/CurrencyRate');
 const Transaction = require('./models/Transaction');
 const Portfolio = require('./models/Portfolio');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/foreign_trading_db';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/foreign_trading_db';
 
 const currencies = [
   { currencyCode: 'USD', currencyName: 'US Dollar', symbol: '$', rateToUSD: 1.0, change24h: 0, flag: 'us' },

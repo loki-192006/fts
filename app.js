@@ -9,7 +9,7 @@ const path = require('path');
 
 const app = express();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/foreign_trading_db';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/foreign_trading_db';
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB Error:', err));
