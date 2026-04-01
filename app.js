@@ -10,9 +10,6 @@ const path = require('path');
 const app = express();
 
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/foreign_trading_db';
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Error:', err));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -71,8 +68,26 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log('Foreign Trading System running at http://localhost:' + PORT);
-});
+
+async function startServer() {
+  try {
+    console.log('Using Mongo URI:', process.env.MONGODB_URI ? 'Present' : 'Missing');
+
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 30000
+    });
+
+    console.log('MongoDB Connected');
+
+    app.listen(PORT, () => {
+      console.log('Foreign Trading System running on port ' + PORT);
+    });
+  } catch (err) {
+    console.error('MongoDB Error:', err);
+    process.exit(1);
+  }
+}
+
+startServer();
 
 module.exports = app;
