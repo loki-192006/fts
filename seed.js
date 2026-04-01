@@ -68,7 +68,7 @@ async function seed() {
   console.log('Seed complete!');
   console.log('Admin: admin@forexpro.com / admin123');
   console.log('User: arjun@example.com / user123');
-  mongoose.disconnect();
+  await mongoose.disconnect();
 }
 
 seed().catch(console.error);
