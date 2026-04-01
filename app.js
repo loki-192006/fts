@@ -8,8 +8,7 @@ const methodOverride = require('method-override');
 const path = require('path');
 
 const app = express();
-
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/foreign_trading_db';
+const MONGO_URI = process.env.MONGODB_URI;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -63,31 +62,37 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Express Error:', err);
   res.status(500).render('404', { title: '500 - Server Error' });
 });
 
-const PORT = process.env.PORT || 3000;
-
-async function startServer() {
+async function connectDB() {
   try {
-    console.log('Using Mongo URI:', process.env.MONGODB_URI ? 'Present' : 'Missing');
+    if (!MONGO_URI) {
+      console.error('MONGODB_URI is missing');
+      return;
+    }
+
+    if (mongoose.connection.readyState === 1) return;
 
     await mongoose.connect(MONGO_URI, {
       serverSelectionTimeoutMS: 30000
     });
 
     console.log('MongoDB Connected');
-
-    app.listen(PORT, () => {
-      console.log('Foreign Trading System running on port ' + PORT);
-    });
   } catch (err) {
     console.error('MongoDB Error:', err);
-    process.exit(1);
   }
 }
 
-startServer();
+connectDB();
+
+const PORT = process.env.PORT || 3000;
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log('Foreign Trading System running at http://localhost:' + PORT);
+  });
+}
 
 module.exports = app;
